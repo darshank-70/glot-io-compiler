@@ -12,6 +12,7 @@ app.use(json());
 
 app.post("/compile", async (req, res) => {
   try {
+    console.log(req);
     const response = await fetch("https://glot.io/api/run/javascript/latest", {
       method: "POST",
       headers: {
@@ -22,7 +23,7 @@ app.post("/compile", async (req, res) => {
         files: [
           {
             name: "main.js",
-            content: req.body.code,
+            content: req.body.files[0].content,
           },
         ],
       }),

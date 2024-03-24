@@ -4,8 +4,10 @@ const YourComponent = () => {
   const [code, setCode] = useState("");
   const [compiledCode, setCompiledCode] = useState("");
   const [error, setError] = useState(null);
+  const [stdErr, setStdErr] = useState(null);
 
   const compileCode = async () => {
+    console.log(code);
     try {
       const response = await fetch("http://localhost:5000/compile", {
         method: "POST",
@@ -25,9 +27,13 @@ const YourComponent = () => {
       const data = await response.json();
       if (response.ok) {
         setCompiledCode(data.stdout);
-        console.log("OUTPUTTTTTTTT:", data);
-      } else {
         setError(data.error);
+
+        console.log("OUTPUTTTTTTTT:", data);
+        setStdErr(data.stderr);
+      } else {
+        setError(data.stderr);
+        setStdErr(data.stderr);
       }
     } catch (error) {
       setError("An error occurred while compiling the code.");
@@ -45,6 +51,7 @@ const YourComponent = () => {
       <button onClick={compileCode}>Compile</button>
       {compiledCode && <pre>{compiledCode}</pre>}
       {error && <div>{error}</div>}
+      {error && `${error} ${stdErr}`}
     </div>
   );
 };
