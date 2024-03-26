@@ -13,10 +13,15 @@ const YourComponent = () => {
     python: "main.py",
     c: "main.c",
   };
+  let programInputs = "";
   function handleLangSelect(e) {
     console.log(e.target.value);
     setCurrentLangName(e.target.value);
     setFilename(fileExt[e.target.value]);
+  }
+  function readInput(e) {
+    // console.log(e.target.value);
+    programInputs = e.target.value;
   }
   const compileCode = async () => {
     console.log(code);
@@ -37,6 +42,7 @@ const YourComponent = () => {
             },
           ],
           language: currentLangName,
+          stdin: programInputs,
         }),
       });
       const data = await response.json();
@@ -64,6 +70,8 @@ const YourComponent = () => {
           <option value={"java"}>Java</option>
           <option value={"c"}>C</option>
         </select>
+        <br />
+        <br />
       </div>
       <div className="current-language">
         <h4>current language: {currentLangName}</h4>
@@ -74,6 +82,17 @@ const YourComponent = () => {
         rows={10}
         cols={50}
       />
+      <br />
+
+      <label>
+        Standard inputs:
+        <input
+          type="text"
+          onChange={readInput}
+          placeholder="space separated inputs"
+        />{" "}
+      </label>
+      <br />
       <button onClick={compileCode}>Compile</button>
       {compiledCode && <pre>{compiledCode}</pre>}
       {error && <div>{error}</div>}

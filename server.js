@@ -12,12 +12,14 @@ app.use(json());
 
 app.post("/compile", async (req, res) => {
   try {
-    console.log(req.headers.contentType);
-    console.log("-------------------");
-    console.log(req.body.language);
     console.log("-------------------");
 
+    console.log(req.headers.contenttype);
+    console.log(req.body.language);
+
     console.log(req.headers.authorization);
+
+    console.log("inputs: ", req.body.stdin);
 
     const currentLanguage = req.body.language;
     const response = await fetch(
@@ -35,6 +37,7 @@ app.post("/compile", async (req, res) => {
               content: req.body.files[0].content,
             },
           ],
+          stdin: req.body.stdin,
         }),
       }
     );
