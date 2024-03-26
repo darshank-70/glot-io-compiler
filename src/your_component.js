@@ -1,27 +1,42 @@
 import React, { useState } from "react";
-
+import GLOT_API_KEY from "./API.js";
 const YourComponent = () => {
   const [code, setCode] = useState("");
   const [compiledCode, setCompiledCode] = useState("");
   const [error, setError] = useState(null);
   const [stdErr, setStdErr] = useState(null);
-
+  const [currentLangName, setCurrentLangName] = useState("javascript");
+  const [filename, setFilename] = useState("main.js");
+  const fileExt = {
+    javascript: "main.js",
+    java: "main.java",
+    python: "main.py",
+    c: "main.c",
+  };
+  function handleLangSelect(e) {
+    console.log(e.target.value);
+    setCurrentLangName(e.target.value);
+    setFilename(fileExt[e.target.value]);
+  }
   const compileCode = async () => {
     console.log(code);
+    console.log(currentLangName);
+    console.log(`file name is set to ${filename}`);
     try {
       const response = await fetch("http://localhost:5000/compile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "b0e0ee4f-07b8-4206-a631-112e16b75234", // Replace with your Glot.io API token
+          Authorization: GLOT_API_KEY,
         },
         body: JSON.stringify({
           files: [
             {
-              name: "main.js",
+              name: filename,
               content: code,
             },
           ],
+          language: currentLangName,
         }),
       });
       const data = await response.json();
@@ -42,6 +57,17 @@ const YourComponent = () => {
 
   return (
     <div>
+      <div className="language-select">
+        <select onChange={handleLangSelect} value={currentLangName}>
+          <option value={"javascript"}>javascript</option>
+          <option value={"python"}>python</option>
+          <option value={"java"}>Java</option>
+          <option value={"c"}>C</option>
+        </select>
+      </div>
+      <div className="current-language">
+        <h4>current language: {currentLangName}</h4>
+      </div>
       <textarea
         value={code}
         onChange={(e) => setCode(e.target.value)}
